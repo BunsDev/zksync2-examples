@@ -76,7 +76,8 @@ export function App() {
         const ethProvider = ethers.getDefaultProvider(sepolia);
         const signer = Signer.from(
             await browserProvider.getSigner(),
-            Number((await browserProvider.getNetwork()).chainId)
+            Number((await browserProvider.getNetwork()).chainId),
+            provider
         );
         const voidSigner = new L1VoidSigner(signer.address, ethProvider, provider);
 
