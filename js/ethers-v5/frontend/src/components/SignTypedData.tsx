@@ -22,7 +22,7 @@ const types = {
     { name: 'to', type: 'Person' },
     { name: 'contents', type: 'string' },
   ],
-} as const
+}
 
 const message = {
   from: {

@@ -28,36 +28,44 @@ export function App() {
         const browserProvider = new Web3Provider((window as any).ethereum);
         const provider = Provider.getDefaultProvider(types.Network.Sepolia);
         const ethProvider = ethers.getDefaultProvider(sepolia);
-        const signer = Signer.from(
-            browserProvider.getSigner(),
-            provider
-        );
-        const voidSigner = new L1VoidSigner(await signer.getAddress(), ethProvider, provider);
 
-
-        const signerL1 = L1Signer.from(
-            browserProvider.getSigner(),
-            Provider.getDefaultProvider(types.Network.Sepolia)
-        );
-
-        const tokenL1 = "0x5C221E77624690fff6dd741493D735a17716c26B";
-        const gas = await signerL1.estimateGasDeposit({
-            token: tokenL1,
-            amount: 10_000_000,
-        });
-        console.log(`Gas: ${gas}`);
-
-        console.log(`L2 balance before withdrawal: ${await voidSigner.getBalance()}`);
-        console.log(`L1 balance before withdrawal: ${await voidSigner.getBalanceL1()}`);
-
-        await signer.withdraw({
+        const s = browserProvider.getSigner();
+        const transferTx = await s.transfer({
             token: utils.ETH_ADDRESS,
-            to: await signer.getAddress(),
-            amount: ethers.utils.parseEther('0.001')
+            to: '0x81E9D85b65E9CC8618D85A1110e4b1DF63fA30d9',
+            amount: 5000
         });
-
-        console.log(`L2 balance after withdrawal: ${await voidSigner.getBalance()}`);
-        console.log(`L1 balance after withdrawal: ${await voidSigner.getBalanceL1()}`);
+        console.log(transferTx);
+        // const signer = Signer.from(
+        //     browserProvider.getSigner(),
+        //     provider
+        // );
+        // const voidSigner = new L1VoidSigner(await signer.getAddress(), ethProvider, provider);
+        //
+        //
+        // const signerL1 = L1Signer.from(
+        //     browserProvider.getSigner(),
+        //     Provider.getDefaultProvider(types.Network.Sepolia)
+        // );
+        //
+        // const tokenL1 = "0x5C221E77624690fff6dd741493D735a17716c26B";
+        // const gas = await signerL1.estimateGasDeposit({
+        //     token: tokenL1,
+        //     amount: 10_000_000,
+        // });
+        // console.log(`Gas: ${gas}`);
+        //
+        // console.log(`L2 balance before withdrawal: ${await voidSigner.getBalance()}`);
+        // console.log(`L1 balance before withdrawal: ${await voidSigner.getBalanceL1()}`);
+        //
+        // await signer.withdraw({
+        //     token: utils.ETH_ADDRESS,
+        //     to: await signer.getAddress(),
+        //     amount: ethers.utils.parseEther('0.001')
+        // });
+        //
+        // console.log(`L2 balance after withdrawal: ${await voidSigner.getBalance()}`);
+        // console.log(`L1 balance after withdrawal: ${await voidSigner.getBalanceL1()}`);
     }
 
     return (
@@ -69,6 +77,7 @@ export function App() {
             {account.isConnected && (
                 <>
                     <hr />
+                    <button onClick={withdrawETH}>Execute</button>
                     <h2>Network</h2>
                     <p>
                         <strong>Make sure to connect your wallet to zkSync Testnet for full functionality</strong>

@@ -1333,9 +1333,9 @@ yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
   integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
 
-zksync-ethers@5.7.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/zksync-ethers/-/zksync-ethers-5.7.0.tgz#edf465eb564ed60d6a1cc3de5978b8bd8481c230"
-  integrity sha512-X99c5APICTlRzyXXjfwkEjRzOPp3Jwo62+z2DVGaZbe+b9Apbizcd2UGV4NGomoAR2GXPbeiSqi1cf3Hbo3cQw==
+zksync-ethers@^5.0.0:
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/zksync-ethers/-/zksync-ethers-5.7.1.tgz#98ee71f1b9bf22fa4a1c9ab28ef9018127912561"
+  integrity sha512-hw8lYvj+TcXz7rCKyGVBiFGOX9g2ssKsFEE2/4Cq76Gtjl8RaV0HqviYVRRi+gOcm4Sdlgzi1MEf0uDVLVVk7g==
   dependencies:
     ethers "~5.7.0"
