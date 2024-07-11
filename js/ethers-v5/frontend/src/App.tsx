@@ -10,13 +10,15 @@ import { SendTransaction } from './components/SendTransaction'
 import { SendTransactionPrepared } from './components/SendTransactionPrepared'
 import { SignMessage } from './components/SignMessage'
 import { SignTypedData } from './components/SignTypedData'
-import { Token } from './components/Token'
+// import { Token } from './components/Token'
 import { WatchContractEvents } from './components/WatchContractEvents'
 import { WatchPendingTransactions } from './components/WatchPendingTransactions'
 import { WriteContract } from './components/WriteContract'
 import { WriteContractPrepared } from './components/WriteContractPrepared'
-import {Web3Provider, Provider, Signer, L1Signer, L1VoidSigner, types, utils} from 'zksync-ethers';
-import {ethers} from 'ethers';
+import {Web3Provider, Provider, Signer, L1Signer, L1VoidSigner, types, utils, Contract} from 'zksync-ethers';
+import {BigNumber, ethers} from 'ethers';
+
+import Token from './Token.json'
 
 const sepolia = 'sepolia'
 
@@ -24,18 +26,98 @@ export function App() {
     const { account } = useEthereum();
 
     async function withdrawETH() {
+        const paymaster = '0x13D0D8550769f59aa241a41897D4859c87f7Dd46';
+        const approvalToken = '0x927488F48ffbc32112F1fF721759649A89721F8F';
+        const zeekAddress = '0x9F649DDD12171091c90d0846b7CB40bda7BA299a';
+        const message = 'This tx cost me no ETH!'
+        const zeekABI = [
+            "constructor()",
+            "event MessageReceived(string)",
+            "function getLastMessage() view returns (string)",
+            "function getTotalMessages() view returns (uint256)",
+            "function sendMessage(string memory _message)"
+        ];
+
+
         // Browser wallet should be connected to zkSync Era Sepolia network
         const browserProvider = new Web3Provider((window as any).ethereum);
-        const provider = Provider.getDefaultProvider(types.Network.Sepolia);
-        const ethProvider = ethers.getDefaultProvider(sepolia);
 
-        const s = browserProvider.getSigner();
-        const transferTx = await s.transfer({
-            token: utils.ETH_ADDRESS,
-            to: '0x81E9D85b65E9CC8618D85A1110e4b1DF63fA30d9',
-            amount: 5000
+        const signer = Signer.from(
+            browserProvider.getSigner(),
+            Provider.getDefaultProvider(types.Network.Sepolia)
+        );
+        const walletAddress = await signer.getAddress();
+
+        const zeek = new Contract(zeekAddress, zeekABI, signer)
+
+        let ethBalance = await signer.getBalance();
+        let tokenBalance = await signer.getBalance(approvalToken);
+        console.log(`Account ${walletAddress} has ${ethers.utils.formatEther(ethBalance)} ETH`);
+        console.log(`Account ${walletAddress} has ${ethers.utils.formatUnits(tokenBalance, 18)} tokens`);
+
+        try {
+            // use this when you need to mint approval tokens to use paymaster
+            // otherwise you can comment
+            const mintTx = await signer.sendTransaction({
+                to: approvalToken,
+                data: new ethers.utils.Interface([
+                    "function mint(address _to, uint256 _amount) returns (bool)"
+                ]).encodeFunctionData("mint", [await signer.getAddress(), BigNumber.from('10000000000000000')]),
+            });
+            await mintTx.wait();
+
+
+            const gasLimit = await zeek.estimateGas.sendMessage(message, {
+                customData: {
+                    gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
+                    paymasterParams: utils.getPaymasterParams(paymaster, {
+                        type: "ApprovalBased",
+                        token: approvalToken,
+                        minimalAllowance: BigNumber.from(1),
+                        innerInput: new Uint8Array(0),
+                    }),
+                }
+            });
+            const gasPrice = await browserProvider.getGasPrice();
+            const fee = gasPrice.mul(gasLimit);
+            console.log(`Fee: ${fee.toString()}`);
+
+
+        // send transaction with additional paymaster params as overrides
+        const tx = await zeek.sendMessage(message, {
+            maxFeePerGas: gasPrice,
+            maxPriorityFeePerGas: "1",
+            gasLimit,
+            customData: {
+                gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
+                paymasterParams: utils.getPaymasterParams(paymaster, {
+                    type: "ApprovalBased",
+                    token: approvalToken,
+                    minimalAllowance: fee,
+                    innerInput: new Uint8Array(0),
+                }),
+            }
         });
-        console.log(transferTx);
+        console.log(`Transaction ${tx.hash} with fee ${ethers.utils.formatUnits(fee, 18)} ERC20 tokens, sent via paymaster ${paymaster}`);
+        await tx.wait();
+        console.log(`Transaction processed`)
+
+        ethBalance = await signer.getBalance();
+        tokenBalance = await signer.getBalance(approvalToken);
+        console.log(`Account ${walletAddress} now has ${ethers.utils.formatEther(ethBalance)} ETH`);
+        console.log(`Account ${walletAddress} now has ${ethers.utils.formatUnits(tokenBalance, 18)} tokens`);
+        console.log(`Done!`);
+
+        } catch (error) {
+            console.log(error)
+        }
+
+        // const transferTx = await s.transfer({
+        //     token: utils.ETH_ADDRESS,
+        //     to: '0x81E9D85b65E9CC8618D85A1110e4b1DF63fA30d9',
+        //     amount: 5000
+        // });
+        // console.log(transferTx);
         // const signer = Signer.from(
         //     browserProvider.getSigner(),
         //     provider
@@ -120,7 +202,6 @@ export function App() {
                     <br />
                     <hr />
                     <h2>Token</h2>
-                    <Token />
                     <br />
                     <hr />
                     <h2>Watch Contract Events</h2>

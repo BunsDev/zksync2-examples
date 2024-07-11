@@ -925,6 +925,7 @@ yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
   integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
 
-zksync-ethers@/home/danijel/zksync-ethers-v6.6.5.tgz:
-  version "6.6.5"
-  resolved "/home/danijel/zksync-ethers-v6.6.5.tgz#845e6eefbc4e8f0f7a5bab0a8ee031c5d6a46430"
+zksync-ethers@^6.8.0-beta.1:
+  version "6.8.0-beta.1"
+  resolved "https://registry.yarnpkg.com/zksync-ethers/-/zksync-ethers-6.8.0-beta.1.tgz#e90c1d7aa41886649d5683d030ea60d0430fd892"
+  integrity sha512-pbaKmL8XRZ4M7+a6paT6AlStoOFxF6Se4TegCFSZkCgVdwP9cPlt/dMT4K0L4n7GHLIbNv5X3VsuM7HJFD3MHw==

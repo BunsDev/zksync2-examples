@@ -972,7 +972,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zksync-ethers@^6.6.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/zksync-ethers/-/zksync-ethers-6.6.0.tgz#67ca684da8b0e3b9e5ed7b55a7f334366f3332b1"
-  integrity sha512-PoUMeCOBtByW//kkPdF7/XNIGxOuf9yEMyVn0c2nMYtgzHdW4MAuBtRg9DO3aaITC6EtjiKAO9CLxIzjbiHDTg==
+zksync-ethers@^6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/zksync-ethers/-/zksync-ethers-6.8.0.tgz#f1d1385a7ba7c881f5eef252555142b2dc14c8b1"
+  integrity sha512-y/8IZcotKfdG04qKKhGTWA0k/6woe3LmrwKVBqQ5NuvWPb0ClEv5y9QF/oNY9V5hZXotavk5N+MRAG0mt2DF9w==
